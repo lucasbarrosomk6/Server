@@ -9,16 +9,24 @@ export class AppService {
   getHello(): string {
     return 'Hello World!';
   }
-  async transcode() {
-    await this.transcodeQueue.add(
+
+  async transcode(userId?: string) {
+    const job = await this.transcodeQueue.add(
       {
         fileName: './file.mp3',
+        userId,
+        timestamp: new Date().toISOString(),
       },
       {
         delay: 5000,
+        removeOnComplete: true,
       },
     );
 
-    return 'test';
+    return { 
+      message: 'Transcode job added to queue',
+      jobId: job.id,
+      userId,
+    };
   }
 }
